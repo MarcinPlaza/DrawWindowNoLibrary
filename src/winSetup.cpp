@@ -42,6 +42,6 @@ void MakeBitMap(HWND hwnd, HBITMAP* Bitmap, BITMAPINFO Bmi, DWORD** window_p, in
 	// Write some colour value to the buffer:
 	DWORD* ws_cpy = *window_p; // This creates a local copy of our bitmap pointer
 	int MapSize = Width * Height; // Just to be explicit, probably would get optimized to this by compiler
-	for (int c = 0; c < MapSize; c++) ws_cpy[c] = 0x0000aaff; // aRGB in hexadecimal format
+	for (int c = 0; c < MapSize; c++) ws_cpy[c] = 0x00000000; // aRGB in hexadecimal format
 }
 

@@ -1,7 +1,9 @@
 #include "MP_drawing.h"
 #include <windows.h>
-
-void MP_drawLine(HDC hdc, int x1, int y1, int x2, int y2) {
+#include <iostream>
+void MP_drawLine(DWORD** window_p, int width, int height, HDC hdc, int x1, int y1, int x2, int y2) {
+    DWORD* ws_cpy = *window_p;
+    
     int domain = abs(x2 - x1);
     int range = abs(y2 - y1);
 
@@ -12,7 +14,10 @@ void MP_drawLine(HDC hdc, int x1, int y1, int x2, int y2) {
 
     while (true) {
         // Set the pixel on the HDC at the current x1, y1
-        SetPixel(hdc, x1, y1, RGB(0, 0, 0)); // Black color
+        int curr = (y1*width)+x1;
+        //SetPixel(hdc, x1, y1, RGB(0, 0, 0)); // Black color
+        //std::cout<<curr<<std::endl;
+        ws_cpy[curr] = 0x0000aaff;
 
         if (x1 == x2 && y1 == y2) break;
 
@@ -28,19 +33,19 @@ void MP_drawLine(HDC hdc, int x1, int y1, int x2, int y2) {
     }
 }
 
-void MP_drawNum(HDC hdc, int num, int x, int y, int segmentLength, int segmentThickness) {
+void MP_drawNum(DWORD** window_p, int width, int height, HDC hdc, int num, int x, int y, int segmentLength, int segmentThickness) {
 
     // Lambda function to draw a horizontal segment
     auto drawHorizontal = [&](int x1, int y1) {
         for (int i = 0; i < segmentThickness; i++){
-            MP_drawLine(hdc, x1, y1+i, x1 + segmentLength, y1+i);
+            MP_drawLine(window_p, width, height, hdc, x1, y1+i, x1 + segmentLength, y1+i);
         }
     };
 
     // Lambda function to draw a vertical segment
     auto drawVertical = [&](int x1, int y1) {
         for (int i = 0; i < segmentThickness; i++){
-            MP_drawLine(hdc, x1+i, y1, x1+i, y1 + segmentLength);
+            MP_drawLine(window_p, width, height, hdc, x1+i, y1, x1+i, y1 + segmentLength);
         }
         
     };
@@ -130,7 +135,7 @@ void MP_drawNum(HDC hdc, int num, int x, int y, int segmentLength, int segmentTh
         drawSegmentG();
     }
 }
-void MP_drawFPS(HDC hdc, double frameTime) {
+void MP_drawFPS(DWORD** window_p, int width, int height, HDC hdc, double frameTime) {
     if (frameTime <= 0) {
         frameTime = 1; // Prevent division by zero
     }
@@ -138,11 +143,11 @@ void MP_drawFPS(HDC hdc, double frameTime) {
     int fps = static_cast<int>(1000000.0 / frameTime); // Convert microseconds to FPS
 
     // Draw each digit of FPS
-    MP_drawNum(hdc, fps % 10, 50, 10, 10, 2); // Draw units
+    MP_drawNum(window_p, width, height, hdc, fps % 10, 50, 10, 10, 2); // Draw units
     fps /= 10;
-    MP_drawNum(hdc, fps % 10, 35, 10, 10, 2); // Draw tens
+    MP_drawNum(window_p, width, height, hdc, fps % 10, 35, 10, 10, 2); // Draw tens
     fps /= 10;
-    MP_drawNum(hdc, fps % 10, 20, 10, 10, 2); // Draw hundreds
+    MP_drawNum(window_p, width, height, hdc, fps % 10, 20, 10, 10, 2); // Draw hundreds
     fps /= 10;
-    MP_drawNum(hdc, fps % 10, 5, 10, 10, 2);   // Draw thousands
+    MP_drawNum(window_p, width, height, hdc, fps % 10, 5, 10, 10, 2);   // Draw thousands
 }

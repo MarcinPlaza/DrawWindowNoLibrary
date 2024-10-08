@@ -36,8 +36,8 @@ BITMAPINFO bmi; // A data struct holding info necessary to create a bitmap
 // Windows requires this to draw:
 PAINTSTRUCT ps;
 
-int screenw = GetSystemMetrics(SM_CXSCREEN);
-int screenh = GetSystemMetrics(SM_CYSCREEN);
+int screenw = 500; //GetSystemMetrics(SM_CXSCREEN);
+int screenh = 500; // GetSystemMetrics(SM_CYSCREEN);
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -82,8 +82,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, 
 
 		// Position and size:
 		0, 0,
-		500,
-        500,
+		screenw,
+        screenh,
         //GetSystemMetrics(SM_CXSCREEN), // 400
 		//GetSystemMetrics(SM_CYSCREEN), // 600
 
@@ -129,8 +129,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     //actual loop
     HDC hdc = BeginPaint(hwnd, &ps);
-    BitBlt(hdc, 0, 0, screenw, screenh, hdc_comp, 0, 0, SRCCOPY);
-
+    
+	/*
     // Animation logic
         if (anim > 500) {
             temp = true;
@@ -144,15 +144,24 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             anim++;
         }
 
-        MP_drawLine(hdc, 0, 500 - anim, 500, anim);
-        
-        MP_drawLine(hdc, 500 - anim, 0, anim, 500);
+    MP_drawLine( &window_bmp_p, screenw, screenh, hdc, 0, 500 - anim, 500, anim);
+    MP_drawLine(&window_bmp_p, screenw, screenh, hdc, 500 - anim, 0, anim, 500);
 
 	QueryPerformanceCounter(&end);
     double frameTime = (double)(end.QuadPart - start.QuadPart) * 1000000.0 / frequency.QuadPart;
     // Draw the FPS
-    MP_drawFPS(hdc, frameTime);
+    MP_drawFPS(&window_bmp_p, screenw, screenh, hdc, frameTime);
+	*/
 
+	//I want this to work+++++++++++++++++++++++++++++++++++++++++++++++
+	/*
+	window_bmp_p[1] = 0x0000aaff;
+	window_bmp_p[2] = 0x0000aaff;
+	window_bmp_p[3] = 0x0000aaff;
+	*/
+
+	
+    BitBlt(hdc, 0, 0, screenw, screenh, hdc_comp, 0, 0, SRCCOPY);
 	EndPaint(hwnd, &ps);
 
 	RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE);
